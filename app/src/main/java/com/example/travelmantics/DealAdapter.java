@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+
 public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder> {
     private ArrayList<TravelDeal> deals;
     private ChildEventListener mChildListener;

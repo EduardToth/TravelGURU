@@ -1,8 +1,5 @@
 package com.example.travelmantics;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -17,16 +14,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.Objects;
 
 
 public class DealActivity extends AppCompatActivity {
@@ -50,12 +50,15 @@ public class DealActivity extends AppCompatActivity {
         txtTitle = (EditText) findViewById(R.id.txtTitle);
         txtDescription = (EditText) findViewById(R.id.txtDescription);
         txtPrice = (EditText) findViewById(R.id.txtPrice);
-        imageView = (ImageView) findViewById(R.id.image);
+        imageView = (ImageView) findViewById(R.id.imageView);
         Intent intent = getIntent();
+
         TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
+
         if (deal == null) {
             deal = new TravelDeal();
         }
+
         this.deal = deal;
         txtTitle.setText(deal.getTitle());
         txtDescription.setText(deal.getDescription());
@@ -67,7 +70,7 @@ public class DealActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jfif");
+                intent.setType("image/jpg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 startActivityForResult(Intent.createChooser(intent,
                         "Insert Picture"), PICTURE_RESULT);
@@ -78,26 +81,25 @@ public class DealActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == PICTURE_RESULT && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
-            ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            assert imageUri != null;
+            final File file = new File(imageUri.toString() + ".jpg");
+            StorageReference ref = FirebaseUtil.mStorageRef.child(file.getName());
+            ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    System.out.println( "*************************************************************");
-                    String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                    System.out.println( "###################################### " + url);
-                    String pictureName = taskSnapshot.getStorage().getPath();
-                    deal.setImageUrl(url);
-                    deal.setImageName(pictureName);
-                    Log.d("Url: ", url);
-                    Log.d("Name", pictureName);
-                    showImage(url);
+                    FirebaseUtil.mStorageRef.child(file.getName()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            deal.setImageUrl(uri.toString());
+                            deal.setImageName("");
+                            showImage(uri.toString());
+                        }
+                    });
                 }
             });
-
-
-
         }
     }
 
@@ -163,6 +165,7 @@ public class DealActivity extends AppCompatActivity {
         }
         mDatabaseReference.child(deal.getId()).removeValue();
         Log.d("image name", deal.getImageName());
+
         if (deal.getImageName() != null && !deal.getImageName().isEmpty()) {
             StorageReference picRef = FirebaseUtil.mStorage.getReference().child(deal.getImageName());
             picRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -173,11 +176,10 @@ public class DealActivity extends AppCompatActivity {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("Delete Image", e.getMessage());
+                    Log.d("Delete Image", Objects.requireNonNull(e.getMessage()));
                 }
             });
         }
-
     }
 
     private void backToList() {
@@ -199,8 +201,6 @@ public class DealActivity extends AppCompatActivity {
                     .resize(width, width * 2 / 3)
                     .centerCrop()
                     .into(imageView);
-        } else {
-            System.out.println("---------------------------------> Nasoooooool");
         }
     }
 }
