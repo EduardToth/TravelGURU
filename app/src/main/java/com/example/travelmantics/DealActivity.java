@@ -1,22 +1,27 @@
 package com.example.travelmantics;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelmantics.utilities.UtilityClass;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.util.Objects;
 
@@ -84,8 +88,10 @@ public class DealActivity extends AppCompatActivity {
 
         if (requestCode == PICTURE_RESULT && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
+            //String extensionName = UtilityClass.getMimeType(this, data.getData());
+            String fileName = UtilityClass.getPictureFileName(this, data.getData());
             assert imageUri != null;
-            final File file = new File(imageUri.toString() + ".jpg");
+            final File file = new File(fileName);
             StorageReference ref = FirebaseUtil.mStorageRef.child(file.getName());
             ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -203,5 +209,6 @@ public class DealActivity extends AppCompatActivity {
                     .into(imageView);
         }
     }
+
 }
 
