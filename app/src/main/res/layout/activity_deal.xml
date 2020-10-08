@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#976BE2"
     tools:context=".DealActivity">
 
     <TextView
@@ -22,6 +23,7 @@
         android:layout_marginTop="@dimen/text_margin_standard"
         android:layout_marginEnd="@dimen/text_margin_standard"
         android:hint="@string/title_hint"
+        android:textColor="#eee6fa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,6 +36,7 @@
         android:layout_marginTop="@dimen/text_margin_standard"
         android:layout_marginEnd="@dimen/text_margin_large"
         android:hint="@string/price_hint"
+        android:textColor="#eee6fa"
         android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@+id/txtTitle"
         tools:layout_editor_absoluteX="100dp" />
@@ -46,6 +49,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/text_margin_standard"
         android:hint="@string/description_hint"
+        android:textColor="#eee6fa"
         app:layout_constraintEnd_toEndOf="@+id/txtPrice"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/txtPrice"

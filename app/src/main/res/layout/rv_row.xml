@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#976BE2"
     android:layout_height="wrap_content">
 
 
@@ -25,6 +26,7 @@
         android:layout_marginLeft="@dimen/text_margin_standard"
         android:layout_marginTop="@dimen/text_margin_standard"
         android:text="TextView"
+        android:textColor="#eee6fa"
         android:textSize="@dimen/title_large"
         app:layout_constraintStart_toEndOf="@+id/imageDeal"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +38,7 @@
         android:layout_marginStart="@dimen/text_margin_standard"
         android:layout_marginLeft="@dimen/text_margin_standard"
         android:layout_marginTop="@dimen/text_margin_standard"
+        android:textColor="#eee6fa"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/imageDeal"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
@@ -44,9 +47,19 @@
         android:id="@+id/tvPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="112dp"
+        android:textColor="#b6e26b"
+        android:textSize="@dimen/text_price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+
+    <TextView
+        android:id="@+id/Currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="100dp"
-        android:text="TextView"
-        android:textColor="@color/colorAccent"
+        android:text="@string/dollar_sign"
+        android:textColor="#b6e26b"
         android:textSize="@dimen/text_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
