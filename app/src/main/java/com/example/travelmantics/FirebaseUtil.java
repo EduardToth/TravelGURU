@@ -44,6 +44,7 @@ public class FirebaseUtil {
             mAuthListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    String str = firebaseAuth.getCurrentUser().toString();
                     if (firebaseAuth.getCurrentUser() == null) {
                         FirebaseUtil.signIn();
                     } else {
