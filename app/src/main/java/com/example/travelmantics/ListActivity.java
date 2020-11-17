@@ -28,11 +28,7 @@ public class ListActivity extends AppCompatActivity {
         inflater.inflate(R.menu.list_activity_menu, menu);
         MenuItem insertMenu = menu.findItem(R.id.insert_menu);
 
-        if (FirebaseUtil.isAdmin) {
-            insertMenu.setVisible(true);
-        } else {
-            insertMenu.setVisible(false);
-        }
+        insertMenu.setVisible(FirebaseUtil.isCurrentUserAdmin());
         return true;
     }
 
@@ -45,12 +41,11 @@ public class ListActivity extends AppCompatActivity {
                 return true;
             case R.id.logout_menu:
                 AuthUI.getInstance()
-                        .signOut(this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("Logout", "User Logged Out");
-                            }
-                        });
+                        .signOut(this);
+                break;
+            case R.id.go_to_profile:
+                Intent intent2 = new Intent(this, ProfileActivity.class);
+                startActivity(intent2);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -65,7 +60,7 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        FirebaseUtil.openFbReference("traveldeals", this);
+        FirebaseUtil.openFbReference(this);
         RecyclerView rvDeals = findViewById(R.id.rvDeals);
         final DealAdapter adapter = new DealAdapter();
         rvDeals.setAdapter(adapter);

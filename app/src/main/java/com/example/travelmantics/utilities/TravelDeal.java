@@ -1,4 +1,4 @@
-package com.example.travelmantics;
+package com.example.travelmantics.utilities;
 
 import java.io.Serializable;
 

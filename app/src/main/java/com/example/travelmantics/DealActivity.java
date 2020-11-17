@@ -1,45 +1,48 @@
 package com.example.travelmantics;
 
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class DealActivity extends AppCompatActivity {
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private EditText txtTitle;
     private EditText txtPrice;
     private EditText txtDescription;
-    private TravelDeal deal;
+    private Optional<TravelDeal> deal;
     private ImageView imageView;
     private static final int PICTURE_RESULT = 42;
 
@@ -47,14 +50,14 @@ public class DealActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deal);
+        mDatabaseReference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("traveldeals");
 
-        mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
-        mDatabaseReference = FirebaseUtil.mDatabaseReference;
-
-        txtTitle = (EditText) findViewById(R.id.txtTitle);
-        txtDescription = (EditText) findViewById(R.id.txtDescription);
-        txtPrice = (EditText) findViewById(R.id.txtPrice);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        txtTitle =  findViewById(R.id.txtTitle);
+        txtDescription = findViewById(R.id.txtDescription);
+        txtPrice =  findViewById(R.id.txtPrice);
+        imageView =  findViewById(R.id.imageView);
         Intent intent = getIntent();
 
         TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
@@ -63,23 +66,70 @@ public class DealActivity extends AppCompatActivity {
             deal = new TravelDeal();
         }
 
-        this.deal = deal;
+        this.deal = Optional.of(deal);
         txtTitle.setText(deal.getTitle());
         txtDescription.setText(deal.getDescription());
         txtPrice.setText(deal.getPrice());
 
         showImage(deal.getImageUrl());
         Button btnImage = findViewById(R.id.btnImage);
-        btnImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpg");
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(Intent.createChooser(intent,
-                        "Insert Picture"), PICTURE_RESULT);
-            }
-        });
+        if (!FirebaseUtil.isCurrentUserAdmin()) {
+            btnImage.setText("Buy");
+            final TravelDeal finalDeal = deal;
+            final AtomicInteger nr = new AtomicInteger(0);
+            btnImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference ref = database.getReference("bought_deals").child(FirebaseUtil.getCurrentUserUid());
+                    ref.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                            if (finalDeal.getId().equals(Objects.requireNonNull(snapshot.getValue()).toString())) {
+                                if (nr.get() == 0) {
+                                    ref.child(Objects.requireNonNull(snapshot.getKey())).removeValue();
+                                } else {
+                                    nr.set(0);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    nr.incrementAndGet();
+                    ref.push().setValue(finalDeal.getId());
+                }
+            });
+        } else {
+            btnImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/jpg");
+                    intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                    startActivityForResult(Intent.createChooser(intent,
+                            "Insert Picture"), PICTURE_RESULT);
+                }
+            });
+        }
     }
 
     @Override
@@ -88,19 +138,26 @@ public class DealActivity extends AppCompatActivity {
 
         if (requestCode == PICTURE_RESULT && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            //String extensionName = UtilityClass.getMimeType(this, data.getData());
-            String fileName = UtilityClass.getPictureFileName(this, data.getData());
+            final String fileName = UtilityClass.getPictureFileName(this, data.getData());
             assert imageUri != null;
             final File file = new File(fileName);
-            StorageReference ref = FirebaseUtil.mStorageRef.child(file.getName());
+
+            StorageReference ref = FirebaseStorage.getInstance()
+                    .getReference()
+                    .child("deals_pictures")
+                    .child(file.getName());
+
+
             ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    FirebaseUtil.mStorageRef.child(file.getName()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    FirebaseStorage.getInstance()
+                            .getReference()
+                            .child("deals_pictures")
+                            .child(file.getName()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            deal.setImageUrl(uri.toString());
-                            deal.setImageName("");
+                            deal.ifPresent(myDeal -> setImageDetails(myDeal, uri, fileName));
                             showImage(uri.toString());
                         }
                     });
@@ -109,11 +166,16 @@ public class DealActivity extends AppCompatActivity {
         }
     }
 
+    private void setImageDetails(TravelDeal deal, Uri uri, String fileName) {
+        deal.setImageUrl(uri.toString());
+        deal.setImageName(fileName);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.save_menu, menu);
-        if (FirebaseUtil.isAdmin) {
+        if (FirebaseUtil.isCurrentUserAdmin()) {
             menu.findItem(R.id.delete_menu).setVisible(true);
             menu.findItem(R.id.save_menu).setVisible(true);
             enableEditTexts(true);
@@ -154,38 +216,41 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void saveDeal() {
-        deal.setTitle(txtTitle.getText().toString());
-        deal.setDescription(txtDescription.getText().toString());
-        deal.setPrice(txtPrice.getText().toString());
-        if (deal.getId() == null) {
-            mDatabaseReference.push().setValue(deal);
-        } else {
-            mDatabaseReference.child(deal.getId()).setValue(deal);
+        if (deal.isPresent()) {
+            deal.get().setTitle(txtTitle.getText().toString());
+            deal.get().setDescription(txtDescription.getText().toString());
+            deal.get().setPrice(txtPrice.getText().toString());
+            if (deal.get().getId() == null) {
+                mDatabaseReference.push().setValue(deal);
+            } else {
+                mDatabaseReference.child(deal.get().getId()).setValue(deal);
+            }
         }
     }
 
     private void deleteDeal() {
-        if (deal == null) {
-            Toast.makeText(this, "Please save the deal before deleting", Toast.LENGTH_SHORT).show();
-            return;
+        if (deal.isPresent()) {
+            deleteDeal(deal.get());
+        } else {
+            makeToast("Please save the deal before deleting");
         }
+    }
+
+    private void deleteDeal(TravelDeal deal) {
         mDatabaseReference.child(deal.getId()).removeValue();
         Log.d("image name", deal.getImageName());
 
         if (deal.getImageName() != null && !deal.getImageName().isEmpty()) {
-            StorageReference picRef = FirebaseUtil.mStorage.getReference().child(deal.getImageName());
-            picRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.d("Delete Image", "Image Successfully Deleted");
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("Delete Image", Objects.requireNonNull(e.getMessage()));
-                }
-            });
+            StorageReference picRef = FirebaseStorage.getInstance()
+                    .getReference()
+                    .child(deal.getImageName());
+
+            picRef.delete();
         }
+    }
+
+    private void makeToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     private void backToList() {
@@ -209,6 +274,5 @@ public class DealActivity extends AppCompatActivity {
                     .into(imageView);
         }
     }
-
 }
 
