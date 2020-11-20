@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.travelmantics.FirebaseUtil;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.ChildEventListenerForBoughtDeal;
 import com.example.travelmantics.utilities.DealViewHolder;
@@ -30,7 +30,7 @@ public class BoughtDealAdapter extends RecyclerView.Adapter<DealViewHolder> {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("bought_deals")
-                .child(FirebaseUtil.getCurrentUserUid());
+                .child(AuthUtil.getCurrentUserUid());
 
         ChildEventListener listener = new ChildEventListenerForBoughtDeal(deals, this);
         ref.addChildEventListener(listener);

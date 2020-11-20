@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.travelmantics.FirebaseUtil;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.GalleryItemClickListener;
 import com.example.travelmantics.utilities.TravelDeal;
@@ -30,17 +30,17 @@ public class GalleryActivity extends AppCompatActivity {
 
     private static final int PICTURE_RESULT = 5432;
     private TravelDeal travelDeal;
-    private GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        gridView = findViewById(R.id.grid_view);
+        GridView gridView = findViewById(R.id.grid_view);
         ImageView imageView = findViewById(R.id.imageView4);
 
         setupImageView(imageView);
+        setupGridView(gridView);
     }
 
     private void setupGridView(GridView gridView) {
@@ -90,7 +90,7 @@ public class GalleryActivity extends AppCompatActivity {
             StorageReference ref = FirebaseStorage.getInstance()
                     .getReference()
                     .child("users")
-                    .child(FirebaseUtil.getCurrentUserUid())
+                    .child(AuthUtil.getCurrentUserUid())
                     .child(travelDeal.getId())
                     .child(file.getName());
 
@@ -116,12 +116,5 @@ public class GalleryActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onResume() {
-        setupGridView(gridView);
-        super.onResume();
     }
 }

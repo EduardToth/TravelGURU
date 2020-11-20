@@ -9,4 +9,15 @@
     <string name="my_profile">MY PROFILE</string>
     <string name="trips">TRIPS</string>
     <string name="add_picture">add picture</string>
+    <string name="buy">Buy</string>
+    <string name="change_username">Change username</string>
+    <string name="my_trips">my trips</string>
+    <string name="textview">TextView</string>
+    <string name="buy_offers">Buy offers</string>
+    <string name="todo">TODO</string>
+    <string name="add_username">Add username</string>
+    <string name="submit">Submit</string>
+    <string name="enter_your_name">Enter your name</string>
+    <string name="add_picture2">Add picture</string>
+
 </resources>

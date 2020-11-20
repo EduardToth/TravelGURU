@@ -1,18 +1,21 @@
 package com.example.travelmantics;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ListActivity extends AppCompatActivity {
 
@@ -20,15 +23,36 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list_activity_menu, menu);
-        MenuItem insertMenu = menu.findItem(R.id.insert_menu);
+        MenuItem insertMenuItem = menu.findItem(R.id.insert_menu);
+        MenuItem goToProfileMenuItem = menu.findItem(R.id.go_to_profile);
 
-        insertMenu.setVisible(FirebaseUtil.isCurrentUserAdmin());
+        insertMenuItem.setVisible(false);
+        goToProfileMenuItem.setVisible(true);
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("administrators")
+                .child(AuthUtil.getCurrentUserUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.getValue() != null) {
+                            insertMenuItem.setVisible(true);
+                            goToProfileMenuItem.setVisible(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
         return true;
     }
 
@@ -42,6 +66,8 @@ public class ListActivity extends AppCompatActivity {
             case R.id.logout_menu:
                 AuthUI.getInstance()
                         .signOut(this);
+                Intent intent1 = new Intent(this, StartActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.go_to_profile:
                 Intent intent2 = new Intent(this, ProfileActivity.class);
@@ -54,23 +80,32 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        FirebaseUtil.detachListener();
+        AuthUtil.detachListener();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        FirebaseUtil.openFbReference(this);
+        AuthUtil.openFbReference(this);
         RecyclerView rvDeals = findViewById(R.id.rvDeals);
         final DealAdapter adapter = new DealAdapter();
         rvDeals.setAdapter(adapter);
         LinearLayoutManager dealsLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(dealsLayoutManager);
-        FirebaseUtil.attachListener();
+        AuthUtil.attachListener();
     }
 
     public void showMenu() {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void onRestart() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(this, StartActivity.class);
+            startActivity(intent);
+        }
+        super.onRestart();
     }
 }

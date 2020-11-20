@@ -19,7 +19,7 @@ It breaks the demeter's law and additional implementations should not be added t
  */
 public final class ChildEventListenerForBoughtDeal implements ChildEventListener {
 
-    private List<TravelDeal> deals;
+    private final List<TravelDeal> deals;
     BoughtDealAdapter boughtDealAdapter;
 
     public ChildEventListenerForBoughtDeal(List<TravelDeal> deals, BoughtDealAdapter boughtDealAdapter) {
@@ -90,4 +90,4 @@ public final class ChildEventListenerForBoughtDeal implements ChildEventListener
     public void onCancelled(@NonNull DatabaseError error) {
 
     }
-};
+}

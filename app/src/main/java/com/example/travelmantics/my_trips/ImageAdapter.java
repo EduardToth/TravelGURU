@@ -6,22 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.travelmantics.FirebaseUtil;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 import java.util.Vector;
 
 public class ImageAdapter extends BaseAdapter {
     private final AppCompatActivity context;
-    private final  List<String> imageUri_s = new Vector<>();
+    private final List<String> imageUri_s = new Vector<>();
     private static int nrInstances = 0;
 
     public ImageAdapter(AppCompatActivity context, String travelDealId) {
@@ -30,24 +26,26 @@ public class ImageAdapter extends BaseAdapter {
         StorageReference ref = FirebaseStorage.getInstance()
                 .getReference()
                 .child("users")
-                .child(FirebaseUtil.getCurrentUserUid())
+                .child(AuthUtil.getCurrentUserUid())
                 .child(travelDealId);
 
-        ref.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            @Override
-            public void onSuccess(ListResult listResult) {
-                listResult.getItems().forEach(item -> item.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        imageUri_s.add(uri.toString());
-                        ImageAdapter.this
-                                .context
-                                .runOnUiThread(ImageAdapter.this::notifyDataSetChanged);
-                    }
-                }));
-            }
-        });
+        ref.listAll().addOnSuccessListener(this::addPicturesToList);
     }
+
+    public void addPicturesToList(ListResult listResult) {
+        listResult.getItems().forEach(this::addPictureToList);
+    }
+
+
+    private void addPictureToList(StorageReference item) {
+        item.getDownloadUrl().addOnSuccessListener(this::addPictureToList);
+    }
+
+    public void addPictureToList(Uri uri) {
+            imageUri_s.add(uri.toString());
+            notifyDataSetChanged();
+        }
+
 
     @Override
     public int getCount() {
@@ -66,7 +64,8 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        ImageView imageView =  new ImageView(context);
+        ImageView imageView = new ImageView(context);
+
         Picasso.with(context)
                 .load(imageUri_s.get(position))
                 .resize(300, 300)
@@ -76,7 +75,7 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 
-    public  String getImageReference(int position) {
+    public String getImageReference(int position) {
         return imageUri_s.get(position);
     }
 }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 
-import com.example.travelmantics.FirebaseUtil;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 
 public class MyTrips extends AppCompatActivity {
@@ -26,6 +26,6 @@ public class MyTrips extends AppCompatActivity {
         LinearLayoutManager dealsLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(dealsLayoutManager);
-        FirebaseUtil.attachListener();
+        AuthUtil.attachListener();
     }
 }

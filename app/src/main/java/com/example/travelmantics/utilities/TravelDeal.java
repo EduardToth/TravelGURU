@@ -1,5 +1,7 @@
 package com.example.travelmantics.utilities;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class TravelDeal implements Serializable {
@@ -69,6 +71,7 @@ public class TravelDeal implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TravelDeal{" +

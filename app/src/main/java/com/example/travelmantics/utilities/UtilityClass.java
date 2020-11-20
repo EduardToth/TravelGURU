@@ -2,17 +2,21 @@ package com.example.travelmantics.utilities;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.webkit.MimeTypeMap;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 
 import java.io.File;
 
 public class UtilityClass {
 
     public static String getMimeType(Context context, Uri uri) {
-        String extension = "";
+        String extension;
 
         //Check uri format to avoid null
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
@@ -31,13 +35,10 @@ public class UtilityClass {
     public static String getFileName(Context context, Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-            try {
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
-            } finally {
-                cursor.close();
             }
         }
         if (result == null) {
@@ -60,5 +61,18 @@ public class UtilityClass {
         }
 
         return fileName;
+    }
+
+    public static void changeActivity(AppCompatActivity currentActivity, Class<? extends AppCompatActivity> activityClass) {
+        Intent intent = new Intent(currentActivity, activityClass);
+        currentActivity.startActivity(intent);
+    }
+
+    public static void startIntentForPicture(AppCompatActivity activity, final int PICTURE_RESULT) {
+        Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+        intent1.setType("image/jpg");
+        intent1.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        activity.startActivityForResult(Intent.createChooser(intent1,
+                "Insert Picture"), PICTURE_RESULT);
     }
 }

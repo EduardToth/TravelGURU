@@ -21,7 +21,7 @@ public class FullImageActivity extends AppCompatActivity {
         String uri = intent.getExtras().getString("uri");
         ImageView imageView = findViewById(R.id.imageView5);
 
-        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int  width = Resources.getSystem().getDisplayMetrics().widthPixels;
         Picasso.with(this)
                 .load(uri)
                 .resize(width, width)

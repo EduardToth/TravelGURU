@@ -7,12 +7,11 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelmantics.R;
-import com.example.travelmantics.utilities.TravelDeal;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public abstract  class DealViewHolder extends RecyclerView.ViewHolder
+public abstract class DealViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
     private final TextView tvTitle;
     private final TextView tvDescription;
@@ -22,10 +21,10 @@ public abstract  class DealViewHolder extends RecyclerView.ViewHolder
 
     protected DealViewHolder(View itemView, List<TravelDeal> deals) {
         super(itemView);
-        tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
-        tvDescription = (TextView) itemView.findViewById(R.id.tvDescription);
-        tvPrice = (TextView) itemView.findViewById(R.id.tvPrice);
-        imageDeal = (ImageView) itemView.findViewById(R.id.imageDeal);
+        tvTitle = itemView.findViewById(R.id.tvTitle);
+        tvDescription = itemView.findViewById(R.id.tvDescription);
+        tvPrice = itemView.findViewById(R.id.tvPrice);
+        imageDeal = itemView.findViewById(R.id.imageDeal);
         this.deals = deals;
     }
 
