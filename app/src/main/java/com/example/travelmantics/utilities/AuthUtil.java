@@ -36,14 +36,13 @@ public class AuthUtil {
     }
 
     private static void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        if (firebaseAuth.getCurrentUser() == null) {
-            AuthUtil.signIn();
-        } else {
+
+            if (firebaseAuth.getCurrentUser() == null) {
+                AuthUtil.signIn();
+            }
             currentUserUid = firebaseAuth.getUid();
-            String userId = firebaseAuth.getUid();
-            checkAdmin(userId);
-        }
-        Toast.makeText(caller.getBaseContext(), "Welcome back!", Toast.LENGTH_LONG).show();
+            Toast.makeText(caller.getBaseContext(), "Welcome back!", Toast.LENGTH_LONG).show();
+
     }
 
     private static void signIn() {

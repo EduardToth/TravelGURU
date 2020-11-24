@@ -2,10 +2,12 @@ package com.example.travelmantics;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ListActivity extends AppCompatActivity {
 
+    boolean entered = false;
+    Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,29 +34,40 @@ public class ListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list_activity_menu, menu);
+        this.menu = menu;
+
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setOptionVisibility();
+        }
+/*
         MenuItem insertMenuItem = menu.findItem(R.id.insert_menu);
         MenuItem goToProfileMenuItem = menu.findItem(R.id.go_to_profile);
 
-        insertMenuItem.setVisible(false);
-        goToProfileMenuItem.setVisible(true);
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child("administrators")
-                .child(AuthUtil.getCurrentUserUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.getValue() != null) {
-                            insertMenuItem.setVisible(true);
-                            goToProfileMenuItem.setVisible(false);
+        while(!entered && FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Log.d("naspa", "naspa");
+        }
+
+            insertMenuItem.setVisible(false);
+            goToProfileMenuItem.setVisible(true);
+            FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("administrators")
+                    .child(AuthUtil.getCurrentUserUid())
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.getValue() != null) {
+                                insertMenuItem.setVisible(true);
+                                goToProfileMenuItem.setVisible(false);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                        }
+                    });
+        */
         return true;
     }
 
@@ -107,5 +122,40 @@ public class ListActivity extends AppCompatActivity {
             startActivity(intent);
         }
         super.onRestart();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 123 && resultCode == -1) {
+
+            setOptionVisibility();
+        }
+    }
+
+    private void setOptionVisibility() {
+        MenuItem insertMenuItem = menu.findItem(R.id.insert_menu);
+        MenuItem goToProfileMenuItem = menu.findItem(R.id.go_to_profile);
+        insertMenuItem.setVisible(false);
+        goToProfileMenuItem.setVisible(true);
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("administrators")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.getValue() != null) {
+                            insertMenuItem.setVisible(true);
+                            goToProfileMenuItem.setVisible(false);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 }
