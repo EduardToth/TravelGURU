@@ -19,5 +19,7 @@
     <string name="submit">Submit</string>
     <string name="enter_your_name">Enter your name</string>
     <string name="add_picture2">Add picture</string>
+    <string name="change_password">change password</string>
+    <string name="enter_username">Enter username</string>
 
 </resources>
