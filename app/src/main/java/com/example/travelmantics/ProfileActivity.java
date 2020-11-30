@@ -2,6 +2,8 @@ package com.example.travelmantics;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.example.travelmantics.my_trips.MyTrips;
 import com.example.travelmantics.utilities.AuthUtil;
@@ -22,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -92,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (bundle != null && bundle.getString(Intent.EXTRA_TEXT) != null) {
             String name = extractName(bundle);
-            greetings += "Hi " + name;
+            greetings += name;
             sayHiView.setText(greetings);
         } else {
             setDefaultGreeting(sayHiView);
@@ -110,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.getValue() != null) {
-                            String greetings = "Hi " + snapshot.getValue();
+                            String greetings = (String) snapshot.getValue();
                             sayHiView.setText(greetings);
                         }
                     }
@@ -127,7 +132,6 @@ public class ProfileActivity extends AppCompatActivity {
         Optional<String> email = getEmail();
         email.ifPresent(mail -> changeUserNameButton.setText(R.string.add_username));
         greetings = email.map(this::getUserName)
-                .map(userName -> "Hi " + userName)
                 .orElse("");
 
         sayHiView.setText(greetings);
@@ -201,13 +205,25 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void showImage(String url) {
         if (url != null && !url.isEmpty()) {
-            int height = Resources.getSystem().getDisplayMetrics().heightPixels;
-            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            int height =  profilePicture.getHeight();
+            int width = profilePicture.getWidth();
             Picasso.with(this)
                     .load(url)
-                    .resize(width * 2, height + 10)
+                    .resize(width, height)
                     .centerCrop()
-                    .into(profilePicture);
+                    .into(profilePicture, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Bitmap imageBitmap = ((BitmapDrawable) profilePicture.getDrawable()).getBitmap();
+                            RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
+                            imageDrawable.setCircular(true);
+                            imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                            profilePicture.setImageDrawable(imageDrawable);
+                        }
+                        @Override
+                        public void onError() {
+                        }
+                    });
         }
     }
 }
