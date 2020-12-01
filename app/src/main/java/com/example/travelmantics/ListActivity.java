@@ -21,8 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ListActivity extends AppCompatActivity {
 
-    boolean entered = false;
-    Menu menu;
+    private Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,35 +38,7 @@ public class ListActivity extends AppCompatActivity {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
             setOptionVisibility();
         }
-/*
-        MenuItem insertMenuItem = menu.findItem(R.id.insert_menu);
-        MenuItem goToProfileMenuItem = menu.findItem(R.id.go_to_profile);
 
-        while(!entered && FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Log.d("naspa", "naspa");
-        }
-
-            insertMenuItem.setVisible(false);
-            goToProfileMenuItem.setVisible(true);
-            FirebaseDatabase.getInstance()
-                    .getReference()
-                    .child("administrators")
-                    .child(AuthUtil.getCurrentUserUid())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.getValue() != null) {
-                                insertMenuItem.setVisible(true);
-                                goToProfileMenuItem.setVisible(false);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-        */
         return true;
     }
 
