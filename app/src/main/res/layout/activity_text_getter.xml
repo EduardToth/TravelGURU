@@ -16,7 +16,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:textColor="#009EFD"
-        android:text="@string/enter_username"
+        android:hint="@string/enter_username"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

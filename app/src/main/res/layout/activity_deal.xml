@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#976BE2"
+    android:background="#fff"
     tools:context=".DealActivity">
 
     <TextView
@@ -23,10 +23,12 @@
         android:layout_marginTop="@dimen/text_margin_standard"
         android:layout_marginEnd="@dimen/text_margin_standard"
         android:hint="@string/title_hint"
-        android:textColor="#eee6fa"
+        android:textColor="#043A65"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:importantForAutofill="no"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/txtPrice"
@@ -36,10 +38,11 @@
         android:layout_marginTop="@dimen/text_margin_standard"
         android:layout_marginEnd="@dimen/text_margin_large"
         android:hint="@string/price_hint"
-        android:textColor="#eee6fa"
+        android:textColor="#043A65"
         android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-        tools:layout_editor_absoluteX="100dp" />
+        tools:layout_editor_absoluteX="100dp"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/txtDescription"
@@ -49,11 +52,13 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/text_margin_standard"
         android:hint="@string/description_hint"
-        android:textColor="#eee6fa"
+        android:textColor="#043A65"
         app:layout_constraintEnd_toEndOf="@+id/txtPrice"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/txtPrice"
-        app:layout_constraintTop_toBottomOf="@+id/txtPrice" />
+        app:layout_constraintTop_toBottomOf="@+id/txtPrice"
+        android:importantForAutofill="no"
+        android:inputType="text" />
 
 
     <Button
@@ -65,6 +70,8 @@
         android:layout_marginEnd="@dimen/text_margin_standard"
         android:text="@string/upload_image"
         android:visibility="visible"
+        android:background="@drawable/capsule"
+        android:textColor="#fff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
@@ -73,21 +80,12 @@
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnImage"
+        tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/image"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="@dimen/text_margin_standard"-->
-    <!--        android:layout_marginTop="@dimen/text_margin_standard"-->
-    <!--        android:layout_marginEnd="@dimen/text_margin_standard"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/btnImage"-->
-    <!--        app:srcCompat="@android:color/transparent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
