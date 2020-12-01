@@ -100,12 +100,12 @@
         "source": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\src\\main\\res\\mipmap-anydpi-v26\\ic_launcher_round.xml"
     },
     {
-        "merged": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
-        "source": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
-    },
-    {
         "merged": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\build\\intermediates\\res\\merged\\debug\\menu_full_image_activity_menu.xml.flat",
         "source": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\src\\main\\res\\menu\\full_image_activity_menu.xml"
+    },
+    {
+        "merged": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_round.png"
     },
     {
         "merged": "C:\\Users\\40752\\Desktop\\proba\\TravelGURU\\app\\build\\intermediates\\res\\merged\\debug\\drawable-v24_guru_title.png.flat",
