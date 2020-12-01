@@ -1,27 +1,24 @@
 package com.example.travelmantics.my_trips;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.GalleryItemClickListener;
+import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.Optional;
@@ -37,22 +34,21 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         GridView gridView = findViewById(R.id.grid_view);
-        ImageView imageView = findViewById(R.id.imageView4);
 
-        setupImageView(imageView);
+        setupImageView();
         setupGridView(gridView);
     }
 
     private void setupGridView(GridView gridView) {
         ImageAdapter adapter = new ImageAdapter(this, travelDeal.getId());
         gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new GalleryItemClickListener(getApplicationContext(), adapter));
+        gridView.setOnItemClickListener(new GalleryItemClickListener(getApplicationContext(), adapter, travelDeal));
     }
 
-    private void setupImageView(ImageView imageView) {
+    private void setupImageView() {
         Intent intent = getIntent();
         Optional<TravelDeal> deal = getCurrentTravelDeal(intent);
-        deal.ifPresent(myDeal -> setDefaults(imageView, myDeal));
+        deal.ifPresent(this::setDefaults);
     }
 
     private Optional<TravelDeal> getCurrentTravelDeal(Intent intent) {
@@ -61,21 +57,10 @@ public class GalleryActivity extends AppCompatActivity {
         return Optional.ofNullable(deal);
     }
 
-    private void setDefaults(ImageView imageView, TravelDeal el) {
+    private void setDefaults(TravelDeal el) {
         travelDeal = el;
-        showImage(el.getImageUrl(), imageView);
     }
 
-    private void showImage(String url, ImageView imageView) {
-        if (url != null && !url.isEmpty()) {
-            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-            Picasso.with(this)
-                    .load(url)
-                    .resize(width, width * 2 / 3)
-                    .centerCrop()
-                    .into(imageView);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -87,15 +72,24 @@ public class GalleryActivity extends AppCompatActivity {
             String fileName = UtilityClass.getPictureFileName(this, data.getData());
             assert imageUri != null;
             final File file = new File(fileName);
-            StorageReference ref = FirebaseStorage.getInstance()
+
+            FirebaseStorage.getInstance()
                     .getReference()
                     .child("users")
                     .child(AuthUtil.getCurrentUserUid())
                     .child(travelDeal.getId())
-                    .child(file.getName());
+                    .child(file.getName())
+                    .putFile(imageUri)
+                    .addOnSuccessListener(this::reloadPage);
 
-            ref.putFile(imageUri);
         }
+    }
+
+    private void reloadPage(UploadTask.TaskSnapshot runnable) {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 
     @Override

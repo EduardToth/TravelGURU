@@ -17,12 +17,9 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        ImageView backgroundImage = findViewById(R.id.imageView2);
         Button viewDealsButton = findViewById(R.id.view_deals);
         Button loginButton = findViewById(R.id.go_to_profile_button);
 
-
-        backgroundImage.invalidate();
 
         loginButton.setOnClickListener(view
                 -> UtilityClass.changeActivity(this, ListActivity.class));
