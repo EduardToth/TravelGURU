@@ -1,5 +1,6 @@
 package com.example.travelmantics.my_trips;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,8 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Vector;
+
+import javax.security.auth.Subject;
 
 public class ImageAdapter extends BaseAdapter {
     private final AppCompatActivity context;
@@ -44,7 +47,7 @@ public class ImageAdapter extends BaseAdapter {
     public void addPictureToList(Uri uri) {
             imageUri_s.add(uri.toString());
             notifyDataSetChanged();
-        }
+    }
 
 
     @Override
@@ -66,9 +69,11 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup viewGroup) {
         ImageView imageView = new ImageView(context);
 
+        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int height = Resources.getSystem().getDisplayMetrics().heightPixels;
         Picasso.with(context)
                 .load(imageUri_s.get(position))
-                .resize(300, 300)
+                .resize(width / 2, height / 3)
                 .centerCrop()
                 .into(imageView);
 
