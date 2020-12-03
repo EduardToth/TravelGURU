@@ -1,7 +1,6 @@
 package com.example.travelmantics;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -14,8 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.travelmantics.my_trips.MyTrips;
+import com.example.travelmantics.my_trips.BoughtDealAdapter;
 import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.utilities.TextGetterActivity;
 import com.example.travelmantics.utilities.UtilityClass;
@@ -37,31 +38,34 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final int PICTURE_RESULT = 142;
     private ImageView profilePicture;
-    private Button changeUserNameButton;
+    private Button editProfileButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_main_page);
 
-        final Button show_offers_button = findViewById(R.id.go_to_offers);
-        final Button myTripsButton = findViewById(R.id.my_trips);
-        profilePicture = findViewById(R.id.profile_picture);
-        TextView sayHiView = findViewById(R.id.say_hi);
-        changeUserNameButton = findViewById(R.id.change_user_name);
-        changeUserNameButton.setOnClickListener(view -> changeUserName());
+        RecyclerView rvDeals = findViewById(R.id.rv_deals2);
+        fillRecyclerView(rvDeals);
 
-        sayHi(sayHiView);
+        //final Button show_offers_button = findViewById(R.id.go_to_offers);
+        //final Button myTripsButton = findViewById(R.id.my_trips);
+        profilePicture = findViewById(R.id.profile_picture);
+        TextView showUsername = findViewById(R.id.show_username);
+        editProfileButton = findViewById(R.id.edit_profile);
+        editProfileButton.setOnClickListener(view -> changeUserName());
+
+        sayHi(showUsername);
         showImageIfExists();
 
         profilePicture.setOnClickListener(view
                 -> UtilityClass.startIntentForPicture(this, PICTURE_RESULT));
 
-        show_offers_button.setOnClickListener(view
-                -> UtilityClass.changeActivity(this, ListActivity.class));
+        //show_offers_button.setOnClickListener(view
+        //        -> UtilityClass.changeActivity(this, ListActivity.class));
 
-        myTripsButton.setOnClickListener(view
-                -> UtilityClass.changeActivity(this, MyTrips.class));
+        //myTripsButton.setOnClickListener(view
+        //        -> UtilityClass.changeActivity(this, MyTrips.class));
     }
 
     private void changeUserName() {
@@ -130,7 +134,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void setDefaultGreeting(TextView sayHiView) {
         String greetings;
         Optional<String> email = getEmail();
-        email.ifPresent(mail -> changeUserNameButton.setText(R.string.add_username));
+        email.ifPresent(mail -> editProfileButton.setText(R.string.add_username));
         greetings = email.map(this::getUserName)
                 .orElse("");
 
@@ -225,5 +229,14 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    private void fillRecyclerView(RecyclerView rvDeals) {
+        final BoughtDealAdapter boughtDealAdapter = new BoughtDealAdapter();
+        rvDeals.setAdapter(boughtDealAdapter);
+        LinearLayoutManager dealsLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        rvDeals.setLayoutManager(dealsLayoutManager);
+        AuthUtil.attachListener();
     }
 }

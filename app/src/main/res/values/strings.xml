@@ -25,5 +25,6 @@
     <string name="title_of_app">title</string>
     <string name="trips_offers">Trips</string>
     <string name="delete_picture">delete picture</string>
+    <string name="edit_profile">EDIT PROFILE</string>
 
 </resources>
