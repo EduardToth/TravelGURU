@@ -1,10 +1,10 @@
 package com.example.travelmantics;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,12 +15,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.travelmantics.listeners.ChildEventListenerForDeals;
 import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DealActivity extends AppCompatActivity {
@@ -112,20 +116,71 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void setupForUser(TravelDeal deal, Button btnImage) {
-        btnImage.setText(R.string.buy);
-        final TravelDeal finalDeal = deal;
-        final AtomicInteger nr = new AtomicInteger(0);
-        btnImage.setOnClickListener(view -> react(finalDeal, nr));
+        AtomicBoolean buttonInvalidated = new AtomicBoolean(false);
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("bought_deals")
+                .child(AuthUtil.getCurrentUserUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        if (deal.getId().equals(snapshot.getValue())) {
+                            synchronized (this) {
+                                buttonInvalidated.set(true);
+                                btnImage.setText(R.string.deal_bought);
+                                btnImage.setOnClickListener(view
+                                        -> Toast.makeText(DealActivity.this, "Deal already bought",
+                                        Toast.LENGTH_LONG).show());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        synchronized (this) {
+            if (!buttonInvalidated.get()) {
+                btnImage.setText(R.string.buy);
+                final TravelDeal finalDeal = deal;
+                final AtomicInteger nr = new AtomicInteger(0);
+
+                btnImage.setOnClickListener(view -> react(finalDeal, nr));
+            }
+        }
     }
 
-    void react(TravelDeal finalDeal, AtomicInteger nr) {
+    private void react(TravelDeal finalDeal, AtomicInteger nr) {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference ref = database.getReference("bought_deals")
                 .child(AuthUtil.getCurrentUserUid());
 
         ref.addChildEventListener(new ChildEventListenerForDeals(ref, finalDeal, nr));
         nr.incrementAndGet();
-        ref.push().setValue(finalDeal.getId());
+        ref.push().setValue(finalDeal.getId())
+                .addOnSuccessListener(this::reactToOnSuccessfullyBoughDeal);
+    }
+
+    private void reactToOnSuccessfullyBoughDeal(Void aVoid) {
+        //Toast.makeText(this, "Deal bought", Toast.LENGTH_LONG).show();
+        SystemClock.sleep(2000);
+        backToList();
     }
 
     @Override
@@ -143,8 +198,8 @@ public class DealActivity extends AppCompatActivity {
                     .child("deals_pictures")
                     .child(file.getName());
 
-
-            ref.putFile(imageUri).addOnSuccessListener(taskSnapshot -> storeImage(file, fileName));
+            ref.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> storeImage(file, fileName));
         }
     }
 
@@ -168,7 +223,6 @@ public class DealActivity extends AppCompatActivity {
         deal.setImageName(fileName);
     }
 
-    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -204,18 +258,17 @@ public class DealActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.save_menu:
-                handleSaveDeal();
-                return true;
-            case R.id.delete_menu:
-                handleDeleteDeal();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        boolean itemSelectedSuccessfully = true;
 
+        if (item.getItemId() == R.id.save_menu) {
+            handleSaveDeal();
+        } else if (item.getItemId() == R.id.save_menu) {
+            handleDeleteDeal();
+        } else {
+            itemSelectedSuccessfully = super.onOptionsItemSelected(item);
         }
 
+        return itemSelectedSuccessfully;
     }
 
     private void handleDeleteDeal() {
@@ -250,11 +303,53 @@ public class DealActivity extends AppCompatActivity {
     private void storeInDatabase() {
         if (deal.getId() == null) {
             mDatabaseReference.push()
-                    .setValue(deal);
+                    .setValue(deal)
+                    .addOnSuccessListener(this::setupAllIds);
         } else {
             mDatabaseReference.child(deal.getId())
                     .setValue(deal);
         }
+    }
+
+    private void setupAllIds(Void avoid) {
+        FirebaseDatabase.getInstance()
+                .getReference()
+                .child("traveldeals")
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                        TravelDeal td = snapshot.getValue(TravelDeal.class);
+                        if(td != null && td.getId() == null) {
+                            td.setId(snapshot.getKey());
+                            FirebaseDatabase.getInstance()
+                                    .getReference()
+                                    .child("traveldeals")
+                                    .child(td.getId())
+                                    .setValue(td);
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void deleteDeal() {
@@ -279,7 +374,8 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void makeToast() {
-        Toast.makeText(this, "Please save the deal before deleting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please save the deal before deleting"
+                , Toast.LENGTH_SHORT).show();
     }
 
     private void backToList() {

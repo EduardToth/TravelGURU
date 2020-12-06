@@ -11,16 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.ChildEventListenerForBoughtDeal;
-import com.example.travelmantics.utilities.DealViewHolder;
 import com.example.travelmantics.utilities.TravelDeal;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class BoughtDealAdapter extends RecyclerView.Adapter<BoughtDealViewHolder> {
-    private final ArrayList<TravelDeal> deals = new ArrayList<>();
+    private final Vector<TravelDeal> deals = new Vector<>();
 
     public BoughtDealAdapter() {
         createChildEventListener();

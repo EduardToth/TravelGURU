@@ -42,7 +42,8 @@ public class GalleryActivity extends AppCompatActivity {
     private void setupGridView(GridView gridView) {
         ImageAdapter adapter = new ImageAdapter(this, travelDeal.getId());
         gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener(new GalleryItemClickListener(getApplicationContext(), adapter, travelDeal));
+        gridView.setOnItemClickListener(new GalleryItemClickListener(getApplicationContext()
+                , adapter, travelDeal));
     }
 
     private void setupImageView() {

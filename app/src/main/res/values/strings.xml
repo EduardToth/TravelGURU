@@ -26,5 +26,6 @@
     <string name="trips_offers">Trips</string>
     <string name="delete_picture">delete picture</string>
     <string name="edit_profile">EDIT PROFILE</string>
+    <string name="deal_bought">Deal bought</string>
 
 </resources>
