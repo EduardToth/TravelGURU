@@ -14,12 +14,10 @@ public class ViewListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         RecyclerView rvDeals = findViewById(R.id.rvDeals);
-        final ToViewDealAdapter adapter = new ToViewDealAdapter();
+        final ToViewDealAdapter adapter = new ToViewDealAdapter(this);
         rvDeals.setAdapter(adapter);
         LinearLayoutManager dealsLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(dealsLayoutManager);
     }
-
-
 }

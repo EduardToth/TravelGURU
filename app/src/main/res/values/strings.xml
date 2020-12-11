@@ -27,5 +27,14 @@
     <string name="delete_picture">delete picture</string>
     <string name="edit_profile">EDIT PROFILE</string>
     <string name="deal_bought">Deal bought</string>
+    <string name="change_profile_picture">Change profile picture</string>
+    <string name="change_user_name">Change user name</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="choose_username">Choose username</string>
+    <string name="delete">Delete</string>
+    <string name="add_comment">Add comment</string>
+    <string name="add_review">Add review</string>
+    <string name="see_comments">See comments</string>
 
 </resources>

@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,11 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelmantics.comments.CommentListActivity;
 import com.example.travelmantics.listeners.ChildEventListenerForDeals;
 import com.example.travelmantics.utilities.AuthUtil;
+import com.example.travelmantics.comments.CommentAdderActivity;
 import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -127,12 +128,16 @@ public class DealActivity extends AppCompatActivity {
                         if (deal.getId().equals(snapshot.getValue())) {
                             synchronized (this) {
                                 buttonInvalidated.set(true);
-                                btnImage.setText(R.string.deal_bought);
-                                btnImage.setOnClickListener(view
-                                        -> Toast.makeText(DealActivity.this, "Deal already bought",
-                                        Toast.LENGTH_LONG).show());
+                                btnImage.setText(R.string.add_review);
+                                btnImage.setOnClickListener(this::goToCommentActivity);
                             }
                         }
+                    }
+
+                    private void goToCommentActivity(View view) {
+                        Intent intent = new Intent(DealActivity.this, CommentAdderActivity.class);
+                        intent.putExtra("deal", deal);
+                        startActivity(intent);
                     }
 
                     @Override
@@ -178,8 +183,6 @@ public class DealActivity extends AppCompatActivity {
     }
 
     private void reactToOnSuccessfullyBoughDeal(Void aVoid) {
-        //Toast.makeText(this, "Deal bought", Toast.LENGTH_LONG).show();
-        SystemClock.sleep(2000);
         backToList();
     }
 
@@ -227,6 +230,7 @@ public class DealActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.save_menu, menu);
+
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("administrators")
@@ -264,11 +268,19 @@ public class DealActivity extends AppCompatActivity {
             handleSaveDeal();
         } else if (item.getItemId() == R.id.save_menu) {
             handleDeleteDeal();
+        } else if (item.getItemId() == R.id.see_comments) {
+            seeComments();
         } else {
             itemSelectedSuccessfully = super.onOptionsItemSelected(item);
         }
 
         return itemSelectedSuccessfully;
+    }
+
+    private void seeComments() {
+        Intent intent = new Intent(this, CommentListActivity.class);
+        intent.putExtra("deal", deal);
+        startActivity(intent);
     }
 
     private void handleDeleteDeal() {
@@ -320,7 +332,7 @@ public class DealActivity extends AppCompatActivity {
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                         TravelDeal td = snapshot.getValue(TravelDeal.class);
-                        if(td != null && td.getId() == null) {
+                        if (td != null && td.getId() == null) {
                             td.setId(snapshot.getKey());
                             FirebaseDatabase.getInstance()
                                     .getReference()

@@ -7,33 +7,66 @@
     tools:context=".utilities.TextGetterActivity">
 
 
+<!--    <EditText-->
+<!--        android:id="@+id/name_getter"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:autofillHints="Your username"-->
+<!--        android:layout_marginTop="200dp"-->
+<!--        android:ems="10"-->
+<!--        android:inputType="textPersonName"-->
+<!--        android:textColor="#009EFD"-->
+<!--        android:hint="@string/enter_username"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.497"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.051" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/submit"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/submit"-->
+<!--        android:textColor="#fff"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.455"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/name_getter"-->
+<!--        android:background="@drawable/capsule"/>-->
+    <ImageView
+        android:id="@+id/profile_picture2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
     <EditText
         android:id="@+id/name_getter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints="Your username"
-        android:layout_marginTop="200dp"
         android:ems="10"
+        android:hint="@string/enter_username"
         android:inputType="textPersonName"
         android:textColor="#009EFD"
-        android:hint="@string/enter_username"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.547"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.051" />
+        app:layout_constraintTop_toBottomOf="@+id/picture_changer_button" />
 
     <Button
-        android:id="@+id/submit"
+        android:id="@+id/picture_changer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:textColor="#fff"
-        android:layout_marginTop="10dp"
+        android:text="@string/change_profile_picture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
+        app:layout_constraintHorizontal_bias="0.574"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_getter"
-        android:background="@drawable/capsule"/>
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

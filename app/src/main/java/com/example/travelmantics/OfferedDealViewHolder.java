@@ -16,7 +16,6 @@ public class OfferedDealViewHolder extends DealViewHolder {
 
     @Override
     public void onClick(View view) {
-
         int position = getAdapterPosition();
         TravelDeal selectedDeal = deals.get(position);
         Intent intent = new Intent(view.getContext(), DealActivity.class);

@@ -21,8 +21,10 @@ import java.util.List;
 public class ToViewDealAdapter extends RecyclerView.Adapter<ToViewDealViewHolder>{
 
     private final List<TravelDeal> deals = new ArrayList<>();
+    private final ViewListActivity viewListActivity;
 
-    public ToViewDealAdapter() {
+    public ToViewDealAdapter(ViewListActivity viewListActivity) {
+        this.viewListActivity = viewListActivity;
         DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("traveldeals");
@@ -66,7 +68,8 @@ public class ToViewDealAdapter extends RecyclerView.Adapter<ToViewDealViewHolder
         Context context = parent.getContext();
         View itemView = LayoutInflater.from(context)
                 .inflate(R.layout.rv_row, parent, false);
-        return ToViewDealViewHolder.getInstance(itemView, deals);
+
+        return ToViewDealViewHolder.getInstance(itemView, deals, viewListActivity);
     }
 
     @Override

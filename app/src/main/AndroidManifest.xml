@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".utilities.TextGetterActivity"></activity>
+        <activity android:name=".comments.CommentListActivity"></activity>
+        <activity android:name=".comments.CommentAdderActivity" />
+        <activity android:name=".utilities.TextGetterActivity" />
         <activity android:name=".ViewListActivity" />
         <activity android:name=".StartActivity">
             <intent-filter>
