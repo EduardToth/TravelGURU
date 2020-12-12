@@ -31,9 +31,10 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TextGetterActivity extends AppCompatActivity {
+public class ProfileUpdateActivity extends AppCompatActivity {
 
     private static final int PICTURE_RESULT = 142;
 
@@ -173,7 +174,7 @@ public class TextGetterActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.save) {
             saveElements();
-        }  else {
+        } else {
             itemSelectedSuccessfully = super.onOptionsItemSelected(item);
         }
 
@@ -201,20 +202,32 @@ public class TextGetterActivity extends AppCompatActivity {
                 .child("client_info")
                 .child(AuthUtil.getCurrentUserUid());
 
+        AtomicBoolean pictureSaveFinished = new AtomicBoolean(false);
         if (uri.get() != null) {
-            saveInFirebaseStorage();
+            saveInFirebaseStorage(pictureSaveFinished);
+        } else {
+            pictureSaveFinished.set(true);
         }
 
+        AtomicBoolean saveUserNameFinished = new AtomicBoolean(false);
         if (!containsDefaultText()) {
-            saveNewUserName(ref, editText.getText().toString());
+            saveNewUserName(ref, editText.getText().toString(), saveUserNameFinished);
+        } else {
+            saveUserNameFinished.set(true);
         }
 
-        goBackToProfile();
+        if(!(pictureSaveFinished.get() && saveUserNameFinished.get())) {
+            goBackToProfile();
+        }
+
+
     }
 
-    private void saveNewUserName(DatabaseReference ref, String s) {
+    private void saveNewUserName(DatabaseReference ref, String s, AtomicBoolean saveUserNameFinished) {
         ref.child("user_name")
-                .setValue(s);
+                .setValue(s)
+                .addOnSuccessListener(runnable -> saveUserNameFinished.set(true))
+                .addOnFailureListener(runnable -> saveUserNameFinished.set(true));
     }
 
     private boolean containsDefaultText() {
@@ -223,7 +236,7 @@ public class TextGetterActivity extends AppCompatActivity {
                 .equals("Enter username");
     }
 
-    private void saveInFirebaseStorage() {
+    private void saveInFirebaseStorage( AtomicBoolean pictureSaveFinished ) {
         final String fileName = UtilityClass.getPictureFileName(this, uri.get());
 
         FirebaseStorage.getInstance()
@@ -232,26 +245,29 @@ public class TextGetterActivity extends AppCompatActivity {
                 .child(AuthUtil.getCurrentUserUid())
                 .child(fileName)
                 .putFile(uri.get())
-                .addOnSuccessListener(uri -> storeUriInDatabase(fileName));
+                .addOnSuccessListener(uri -> storeUriInDatabase(fileName, pictureSaveFinished));
     }
 
-    private void storeUriInDatabase(String fileName) {
+    private void storeUriInDatabase(String fileName,  AtomicBoolean pictureSaveFinished ) {
         FirebaseStorage.getInstance()
                 .getReference()
                 .child("users")
                 .child(AuthUtil.getCurrentUserUid())
                 .child(fileName)
                 .getDownloadUrl()
-                .addOnSuccessListener(this::storeUriInDatabase);
+                .addOnSuccessListener(uri -> storeUriInDatabase(uri, pictureSaveFinished));
     }
 
-    private void storeUriInDatabase(Uri imageUri) {
+    private void storeUriInDatabase(Uri imageUri,  AtomicBoolean pictureSaveFinished ) {
 
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("client_info")
                 .child(AuthUtil.getCurrentUserUid())
                 .child("profile_picture_url")
-                .setValue(imageUri.toString());
+                .setValue(imageUri.toString())
+                .addOnSuccessListener(runnable -> pictureSaveFinished.set(true))
+                .addOnFailureListener(runnable -> pictureSaveFinished.set(true));
     }
+
 }

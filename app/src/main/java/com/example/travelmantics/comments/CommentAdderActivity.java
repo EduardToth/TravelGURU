@@ -1,8 +1,5 @@
 package com.example.travelmantics.comments;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,13 +9,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.travelmantics.R;
 import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.utilities.TravelDeal;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class CommentAdderActivity extends AppCompatActivity {
@@ -32,9 +33,9 @@ public class CommentAdderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment_adder);
 
         editText = findViewById(R.id.comment);
-        deal =  (TravelDeal) getIntent().getExtras().get("deal");
+        deal = (TravelDeal) getIntent().getExtras().get("deal");
         ImageView imageView = findViewById(R.id.dealPicture);
-        if(deal.getImageUrl() != null) {
+        if (deal.getImageUrl() != null) {
             showImage(deal.getImageUrl(), imageView);
         }
     }
@@ -74,7 +75,7 @@ public class CommentAdderActivity extends AppCompatActivity {
 
     private void saveReview() {
         String review = editText.getText().toString();
-        if(!review.isEmpty()) {
+        if (!review.isEmpty()) {
             saveReview(review);
         } else {
             Toast.makeText(this, "Cannot save an empty review", Toast.LENGTH_LONG).show();
@@ -85,25 +86,39 @@ public class CommentAdderActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("client_info")
-                .child(AuthUtil.getCurrentUserUid())
-                .addValueEventListener(new ValueEventListener() {
+                .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user = snapshot.getValue(User.class);
-                        Comment comment = new Comment(review, user);
-                        saveComment(comment);
-
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        if(snapshot.getKey().equals(AuthUtil.getCurrentUserUid())) {
+                            saveReview(review);
+                        }
                     }
 
-                    private void saveComment(Comment comment) {
+                    private void saveReview(String review) {
                         FirebaseDatabase.getInstance()
                                 .getReference()
                                 .child("comments")
                                 .child(deal.getId())
+                                .child(AuthUtil.getCurrentUserUid())
                                 .push()
-                                .setValue(comment)
+                                .setValue(review)
                                 .addOnSuccessListener(CommentAdderActivity.this::finishSuccessfully)
                                 .addOnFailureListener(CommentAdderActivity.this::makeFailureToast);
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
                     }
 
                     @Override

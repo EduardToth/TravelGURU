@@ -6,14 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelmantics.R;
 import com.example.travelmantics.utilities.TravelDeal;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -27,17 +28,67 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder> {
                 .getReference()
                 .child("comments")
                 .child(travelDeal.getId())
-                .addValueEventListener(new ValueEventListener() {
+                .addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        snapshot.getChildren()
-                        .forEach(this::addComment);
+                    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        FirebaseDatabase.getInstance()
+                                .getReference()
+                                .child("client_info")
+                                .addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot snapshot1, @Nullable String previousChildName) {
+                                        if (snapshot1.getKey().equals(snapshot.getKey())) {
+                                            User user = snapshot1.getValue(User.class);
+                                            snapshot.getChildren()
+                                                    .forEach(dataSnapshot -> {
+                                                        String review = dataSnapshot.getValue().toString();
+                                                        Comment comment = new Comment(review, user);
+                                                        comments.add(comment);
+                                                    });
+
+                                            if (snapshot.getChildren().iterator().hasNext()) {
+                                                notifyDataSetChanged();
+                                            }
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
                     }
 
-                    private void addComment(DataSnapshot child) {
-                        Comment comment = child.getValue(Comment.class);
-                        comments.add(comment);
-                        notifyItemInserted(comments.size() - 1);
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
                     }
 
                     @Override

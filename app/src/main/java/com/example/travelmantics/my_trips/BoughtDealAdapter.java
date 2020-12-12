@@ -12,10 +12,12 @@ import com.example.travelmantics.utilities.AuthUtil;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.ChildEventListenerForBoughtDeal;
 import com.example.travelmantics.utilities.TravelDeal;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
 import java.util.Vector;
 
 public class BoughtDealAdapter extends RecyclerView.Adapter<BoughtDealViewHolder> {
@@ -29,7 +31,7 @@ public class BoughtDealAdapter extends RecyclerView.Adapter<BoughtDealViewHolder
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("bought_deals")
-                .child(AuthUtil.getCurrentUserUid());
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
 
         ChildEventListener listener = new ChildEventListenerForBoughtDeal(deals, this);
         ref.addChildEventListener(listener);

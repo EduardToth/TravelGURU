@@ -6,12 +6,18 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class UtilityClass {
 
@@ -74,5 +80,10 @@ public class UtilityClass {
         intent1.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         activity.startActivityForResult(Intent.createChooser(intent1,
                 "Insert Picture"), PICTURE_RESULT);
+    }
+
+    public static List<DataSnapshot> convertToList(Iterable<DataSnapshot> children) {
+        return StreamSupport.stream(children.spliterator(), false)
+                .collect(Collectors.toList());
     }
 }

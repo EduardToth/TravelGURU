@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.travelmantics.comments.User;
 import com.example.travelmantics.my_trips.BoughtDealAdapter;
 import com.example.travelmantics.utilities.AuthUtil;
-import com.example.travelmantics.utilities.TextGetterActivity;
+import com.example.travelmantics.utilities.ProfileUpdateActivity;
 import com.example.travelmantics.utilities.UtilityClass;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,13 +51,13 @@ public class ProfileActivity extends AppCompatActivity {
         profilePicture = findViewById(R.id.profile_picture);
         showUsername = findViewById(R.id.show_username);
         Button editProfileButton = findViewById(R.id.edit_profile);
-        editProfileButton.setOnClickListener(this::changeUserName);
+        editProfileButton.setOnClickListener(this::editProfile);
 
         showImageIfExists();
     }
 
-    private void changeUserName(View view) {
-        Intent intent = new Intent(this, TextGetterActivity.class);
+    private void editProfile(View view) {
+        Intent intent = new Intent(this, ProfileUpdateActivity.class);
         startActivity(intent);
     }
 
