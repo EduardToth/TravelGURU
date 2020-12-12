@@ -5,7 +5,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelmantics.R;
@@ -16,7 +15,6 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
     private final ImageView profilePicture;
     private final TextView review;
     private final TextView name;
-
     public CommentViewHolder(@NonNull View itemView) {
         super(itemView);
         profilePicture = itemView.findViewById(R.id.client_picture);
@@ -31,12 +29,20 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void showImage(String url) {
-        if (url != null && !url.isEmpty()) {
-            Picasso.with(review.getContext())
-                    .load(url)
-                    .resize(200, 200)
-                    .centerCrop()
-                    .into(profilePicture);
+        if(url != null) {
+            if (!url.isEmpty()) {
+                Picasso.with(review.getContext())
+                        .load(url)
+                        .resize(200, 200)
+                        .centerCrop()
+                        .into(profilePicture);
+            } else {
+                Picasso.with(review.getContext())
+                        .load(R.drawable.empty_profile)
+                        .resize(200, 200)
+                        .centerCrop()
+                        .into(profilePicture);
+            }
         }
     }
 }
