@@ -1,44 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gradient_header">
 
-    <LinearLayout
-        android:id="@+id/linearlayour_user"
-        android:layout_width="413dp"
-        android:layout_height="223dp"
-        android:orientation="vertical"
+
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="100dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="28dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fui_ic_anonymous_white_24dp" />
 
-        <ImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="100dp"
-            android:layout_height="110dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:contentDescription="@string/todo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/fui_ic_anonymous_white_24dp" />
-
-        <TextView
-            android:id="@+id/show_username"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:text="@string/textview"
-            android:textColor="#ffff"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/show_username"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center"
+        android:text="@string/textview"
+        android:textColor="#ffff"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
 
 
     <Button
@@ -52,36 +44,61 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearlayour_user"
+        app:layout_constraintTop_toBottomOf="@+id/show_username"
         app:layout_constraintVertical_bias="0.0" />
 
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/rv_deals2"-->
-<!--        android:layout_width="408dp"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/edit_profile" />-->
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/rv_deals2"-->
+    <!--        android:layout_width="408dp"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintHorizontal_bias="0.0"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/edit_profile" />-->
 
-    <ScrollView
+    <!--    <ScrollView-->
+    <!--        android:id="@+id/scrollView2"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_below="@+id/edit_profile"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/edit_profile">-->
+
+    <!--            <androidx.recyclerview.widget.RecyclerView-->
+    <!--                android:id="@+id/rv_deals2"-->
+    <!--                android:layout_width="409dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_marginTop="8dp"-->
+    <!--                app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--    </ScrollView>-->
+
+    <TextView
+        android:id="@+id/trp"
         android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="@string/trips_tt"
+        android:textColor="#ffff"
+        app:layout_constraintBottom_toTopOf="@+id/rv_deals2"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile"
+        app:layout_constraintVertical_bias="0.502">
+
+    </TextView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_deals2"
+        android:layout_width="400dp"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_profile">
-        <LinearLayout android:orientation="vertical"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/edit_profile">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_deals2"
-                android:layout_width="409dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_profile" />
-        </LinearLayout>
-    </ScrollView>
-
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="230dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/trp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

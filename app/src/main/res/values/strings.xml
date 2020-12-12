@@ -36,5 +36,8 @@
     <string name="add_comment">Add comment</string>
     <string name="add_review">Add review</string>
     <string name="see_comments">See comments</string>
+    <string name="trips_tt">Trips</string>
+    <string name="change_photo">Change photo</string>
+    <string name="nickname">This could be your first name or a nickname.\nIt\'s how you\'ll appear on TravelGURU.</string>
 
 </resources>
