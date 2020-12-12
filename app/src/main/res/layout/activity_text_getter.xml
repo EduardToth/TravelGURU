@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#4CBAFB"
     tools:context=".utilities.ProfileUpdateActivity">
 
 
@@ -37,11 +38,12 @@
 <!--        app:layout_constraintTop_toBottomOf="@+id/name_getter"-->
 <!--        android:background="@drawable/capsule"/>-->
 
+
     <ImageView
         android:id="@+id/profile_picture2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,40 +54,46 @@
         android:id="@+id/picture_changer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
         android:text="@string/change_photo"
+        android:textColor="#ffff"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_picture2" />
 
     <EditText
         android:id="@+id/name_getter"
-        android:layout_width="wrap_content"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="148dp"
+        android:layout_marginTop="25dp"
         android:autofillHints="Your username"
+        android:backgroundTint="#ffff"
         android:ems="10"
+        android:gravity="center"
         android:hint="@string/enter_username"
         android:inputType="textPersonName"
-        android:textColor="#009EFD"
+        android:textColor="#ffff"
+        android:textSize="35sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture_changer_button" />
-
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/nickname"
+        android:textColor="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_getter"
-        app:layout_constraintVertical_bias="0.27">
+        app:layout_constraintVertical_bias="0.0">
 
     </TextView>
 
