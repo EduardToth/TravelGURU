@@ -6,26 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".comments.CommentAdderActivity">
 
-    <EditText
-        android:id="@+id/comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="Your username"
-        android:ems="10"
-        android:hint=""
-        android:inputType="textPersonName"
-        android:textColor="#009EFD"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.442"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dealPicture" />
-
     <ImageView
         android:id="@+id/dealPicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="242dp"
+        android:layout_height="57dp"
+        android:numStars="5"
+        android:stepSize="1"
+        app:layout_constraintBottom_toTopOf="@+id/comment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dealPicture"
+        app:layout_constraintVertical_bias="0.895" />
+
+    <EditText
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="136dp"
+        android:autofillHints="Your username"
+        android:backgroundTint="#009EFD"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="@string/tell_us_what_you_loved"
+        android:inputType="textPersonName"
+        android:lines="3"
+        android:textColor="#009EFD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

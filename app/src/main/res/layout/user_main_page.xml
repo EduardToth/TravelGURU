@@ -73,32 +73,25 @@
 
     <!--    </ScrollView>-->
 
-    <TextView
-        android:id="@+id/trp"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/trips_tt"
-        android:textColor="#ffff"
-        app:layout_constraintBottom_toTopOf="@+id/rv_deals2"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_profile"
-        app:layout_constraintVertical_bias="0.502">
-
-    </TextView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_deals2"
-        android:layout_width="400dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="230dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="25dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trp" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_deals2"
+            android:layout_width="400dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="25dp" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
