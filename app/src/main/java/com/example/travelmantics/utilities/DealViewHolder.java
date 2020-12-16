@@ -59,17 +59,27 @@ public abstract class DealViewHolder extends RecyclerView.ViewHolder
                         synchronized (this) {
                             ratingBar.setVisibility(View.VISIBLE);
                             thereAreRatings.set(true);
-                            double averageRating = UtilityClass.convertToList(snapshot.getChildren())
+                            UtilityClass.convertToList(snapshot.getChildren())
                                     .parallelStream()
                                     .map(DataSnapshot::getValue)
                                     .map(Objects::toString)
+                                    .filter(this::isNumber)
                                     .map(Double::parseDouble)
                                     .map(Double.class::cast)
                                     .mapToDouble(d -> d)
                                     .parallel()
                                     .average()
-                                    .orElse(0);
-                            ratingBar.setRating((float) averageRating);
+                                    .ifPresent(average -> ratingBar.setRating((float) average));
+
+                        }
+                    }
+
+                    private boolean isNumber(String str) {
+                        try {
+                            Double.parseDouble(str);
+                            return true;
+                        } catch (NumberFormatException e) {
+                            return false;
                         }
                     }
 
