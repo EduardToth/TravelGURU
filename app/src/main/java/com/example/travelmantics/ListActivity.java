@@ -120,7 +120,7 @@ public class ListActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("administrators")
-                .child(AuthUtil.getCurrentUserUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

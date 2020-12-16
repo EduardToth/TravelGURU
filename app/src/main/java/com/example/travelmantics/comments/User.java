@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable {
     private  String profile_picture_url;
     private  String user_name;
+    private String userId;
 
     public User() {
         this.profile_picture_url = "";
@@ -31,6 +32,14 @@ public class User implements Serializable {
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     @Override

@@ -18,10 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelmantics.comments.CommentAdderActivity;
 import com.example.travelmantics.comments.CommentListActivity;
 import com.example.travelmantics.listeners.ChildEventListenerForDeals;
 import com.example.travelmantics.utilities.AuthUtil;
-import com.example.travelmantics.comments.CommentAdderActivity;
 import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
 import com.google.firebase.database.ChildEventListener;
@@ -35,8 +35,10 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class DealActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
@@ -118,6 +120,7 @@ public class DealActivity extends AppCompatActivity {
 
     private void setupForUser(TravelDeal deal, Button btnImage) {
         AtomicBoolean buttonInvalidated = new AtomicBoolean(false);
+        final Object monitor = new Object();
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("bought_deals")
@@ -127,18 +130,58 @@ public class DealActivity extends AppCompatActivity {
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         if (deal.getId().equals(snapshot.getValue())) {
                             synchronized (this) {
-                                buttonInvalidated.set(true);
-                                btnImage.setText(R.string.add_review);
-                                btnImage.setOnClickListener(this::goToCommentActivity);
+                                FirebaseDatabase.getInstance()
+                                        .getReference()
+                                        .child("comments")
+                                        .child(deal.getId())
+                                        .addChildEventListener(new ChildEventListener() {
+                                            @Override
+                                            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                               synchronized (monitor) {
+                                                   boolean userAddedComment = Objects.equals(snapshot.getKey(), AuthUtil.getCurrentUserUid());
+                                                   buttonInvalidated.set(true);
+                                                   btnImage.setText(R.string.add_review);
+
+                                                   if (!userAddedComment) {
+                                                       btnImage.setOnClickListener(DealActivity.this::goToCommentActivity);
+                                                   } else {
+                                                       btnImage.setOnClickListener(view -> Toast.makeText(DealActivity.this,
+                                                               "You already added a review",
+                                                               Toast.LENGTH_LONG).show());
+                                                   }
+                                               }
+                                            }
+
+                                            @Override
+                                            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                                            }
+
+                                            @Override
+                                            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+                            }
+                            synchronized (monitor) {
+                                if (!buttonInvalidated.get()) {
+                                    btnImage.setText(R.string.add_review);
+                                    btnImage.setOnClickListener(DealActivity.this::goToCommentActivity);
+                                }
                             }
                         }
                     }
 
-                    private void goToCommentActivity(View view) {
-                        Intent intent = new Intent(DealActivity.this, CommentAdderActivity.class);
-                        intent.putExtra("deal", deal);
-                        startActivity(intent);
-                    }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -160,6 +203,7 @@ public class DealActivity extends AppCompatActivity {
 
                     }
                 });
+
         synchronized (this) {
             if (!buttonInvalidated.get()) {
                 btnImage.setText(R.string.buy);
@@ -410,6 +454,12 @@ public class DealActivity extends AppCompatActivity {
                     .centerCrop()
                     .into(imageView);
         }
+    }
+
+    private void goToCommentActivity(View view) {
+        Intent intent = new Intent(DealActivity.this, CommentAdderActivity.class);
+        intent.putExtra("deal", deal);
+        startActivity(intent);
     }
 }
 
