@@ -31,7 +31,8 @@ public class BoughtDealAdapter extends RecyclerView.Adapter<BoughtDealViewHolder
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference()
                 .child("bought_deals")
-                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser())
+                        .getUid());
 
         ChildEventListener listener = new ChildEventListenerForBoughtDeal(deals, this);
         ref.addChildEventListener(listener);

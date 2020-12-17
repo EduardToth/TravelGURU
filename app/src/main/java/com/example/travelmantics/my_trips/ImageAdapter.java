@@ -28,7 +28,6 @@ public class ImageAdapter extends BaseAdapter {
     public ImageAdapter(AppCompatActivity context, String travelDealId) {
         this.context = context;
         addPicturesToList(travelDealId);
-
     }
 
     private void addPicturesToList(String travelDealId) {
@@ -42,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
                 .addOnSuccessListener(this::addPicturesToList);
     }
 
-    public void addPicturesToList(ListResult listResult) {
+    private void addPicturesToList(ListResult listResult) {
         listResult.getItems().forEach(this::addPictureToList);
     }
 
@@ -51,7 +50,7 @@ public class ImageAdapter extends BaseAdapter {
         item.getDownloadUrl().addOnSuccessListener(uri -> addPictureToList(uri, item));
     }
 
-    public void addPictureToList(Uri uri, StorageReference storageReference) {
+    private void addPictureToList(Uri uri, StorageReference storageReference) {
         imageUri_s.add(uri.toString());
         notifyDataSetChanged();
         urlMappins.put(uri.toString(), storageReference);

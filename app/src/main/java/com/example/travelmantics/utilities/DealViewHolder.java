@@ -65,7 +65,6 @@ public abstract class DealViewHolder extends RecyclerView.ViewHolder
                                     .map(Objects::toString)
                                     .filter(this::isNumber)
                                     .map(Double::parseDouble)
-                                    .map(Double.class::cast)
                                     .mapToDouble(d -> d)
                                     .parallel()
                                     .average()

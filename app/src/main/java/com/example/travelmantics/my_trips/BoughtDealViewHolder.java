@@ -16,7 +16,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class BoughtDealViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class BoughtDealViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
 
     TextView bought_deal_title;
     ImageView bought_deal_image;
@@ -27,6 +28,7 @@ public class BoughtDealViewHolder extends RecyclerView.ViewHolder implements Vie
         this.bought_deal_title = itemView.findViewById(R.id.bought_deal_title);
         this.bought_deal_image = itemView.findViewById(R.id.bought_deal_image);
         this.bought_deals = bought_deals;
+        itemView.setOnClickListener(this::onClick);
     }
 
     public void bind(TravelDeal deal) {

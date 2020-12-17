@@ -1,12 +1,14 @@
 package com.example.travelmantics.my_trips;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.example.travelmantics.utilities.TravelDeal;
 import com.example.travelmantics.utilities.UtilityClass;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.Optional;
@@ -27,7 +30,6 @@ public class GalleryActivity extends AppCompatActivity {
 
     private static final int PICTURE_RESULT = 5432;
     private TravelDeal travelDeal;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,4 +114,5 @@ public class GalleryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

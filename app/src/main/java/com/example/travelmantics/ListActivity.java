@@ -14,15 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.travelmantics.listeners.UserStorageHandlerListener;
 import com.example.travelmantics.utilities.AuthUtil;
+import com.example.travelmantics.utilities.PersistenceSetter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
 public class ListActivity extends AppCompatActivity {
+
 
     private Menu menu;
 
@@ -30,7 +33,9 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
-
+        try {
+            PersistenceSetter.setupPersistence();
+        }catch (DatabaseException e){}
     }
 
     @Override

@@ -16,6 +16,7 @@ public class ToViewDealViewHolder extends DealViewHolder {
                                    ViewListActivity viewListActivity) {
         super(itemView, deals);
         this.viewListActivity = viewListActivity;
+        itemView.setOnClickListener(this::onClick);
     }
 
     @Override

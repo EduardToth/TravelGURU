@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -173,8 +174,8 @@ public class ProfileActivity extends AppCompatActivity {
     private void fillRecyclerView(RecyclerView rvDeals) {
         final BoughtDealAdapter boughtDealAdapter = new BoughtDealAdapter();
         rvDeals.setAdapter(boughtDealAdapter);
-        LinearLayoutManager dealsLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager dealsLayoutManager = new LinearLayoutManager(this,
+                        LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(dealsLayoutManager);
         AuthUtil.attachListener();
     }
