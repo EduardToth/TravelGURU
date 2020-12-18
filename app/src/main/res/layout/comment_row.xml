@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#ffff">
 
     <ImageView
         android:id="@+id/client_picture"
@@ -11,40 +12,55 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="@dimen/text_margin_standard"
+        android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="@null"/>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/client_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/text_margin_standard"
+        android:layout_width="252dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColor="#0C0101"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.614"
+        app:layout_constraintHorizontal_bias="0.076"
         app:layout_constraintStart_toEndOf="@+id/client_picture"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/review"
-        android:layout_width="254dp"
-        android:layout_height="44dp"
+        android:layout_width="259dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:textColor="#0C0101"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.758"
+        app:layout_constraintHorizontal_bias="0.166"
         app:layout_constraintStart_toEndOf="@+id/client_picture"
-        app:layout_constraintTop_toBottomOf="@+id/rating_bar_for_comment_list" />
+        app:layout_constraintTop_toBottomOf="@+id/rating_bar_for_comment_list"
+        app:layout_constraintVertical_bias="0.0" />
 
     <RatingBar
         android:id="@+id/rating_bar_for_comment_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@android:attr/ratingBarStyleSmall"
+        android:layout_width="235dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:isIndicator="true"
+        android:progressTint="#03A9F4"
+        android:scaleX=".5"
+        android:scaleY=".5"
+        android:transformPivotX="0dp"
+        android:transformPivotY="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.033"
         app:layout_constraintStart_toEndOf="@+id/client_picture"
         app:layout_constraintTop_toBottomOf="@+id/client_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>

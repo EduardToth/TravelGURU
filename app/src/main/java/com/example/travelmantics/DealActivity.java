@@ -310,7 +310,7 @@ public class DealActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.save_menu) {
             handleSaveDeal();
-        } else if (item.getItemId() == R.id.save_menu) {
+        } else if (item.getItemId() == R.id.delete_menu) {
             handleDeleteDeal();
         } else if (item.getItemId() == R.id.see_comments) {
             seeComments();
