@@ -23,9 +23,7 @@ import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-
 public class ListActivity extends AppCompatActivity {
-
 
     private Menu menu;
 
