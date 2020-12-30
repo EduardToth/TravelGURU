@@ -54,6 +54,7 @@ public class ListActivity extends AppCompatActivity {
         boolean selectionSuccessful = true;
         if (item.getItemId() == R.id.insert_menu) {
             Intent intent = new Intent(this, DealActivity.class);
+            intent.putExtra("is_new_travel_deal", true);
             startActivity(intent);
         } else if (item.getItemId() == R.id.logout_menu) {
             AuthUI.getInstance()

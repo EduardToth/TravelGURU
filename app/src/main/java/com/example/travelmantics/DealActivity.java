@@ -38,7 +38,6 @@ import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public class DealActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
@@ -48,12 +47,17 @@ public class DealActivity extends AppCompatActivity {
     private TravelDeal deal;
     private ImageView imageView;
     private static final int PICTURE_RESULT = 42;
-
+    private boolean isNewTravelDeal = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deal);
 
+        Intent intent = getIntent();
+        if(intent.getExtras().get("is_new_travel_deal") != null &&
+                intent.getExtras().get("is_new_travel_deal").equals(true)) {
+            isNewTravelDeal = true;
+        }
         txtTitle = findViewById(R.id.txtTitle);
         txtDescription = findViewById(R.id.txtDescription);
         txtPrice = findViewById(R.id.txtPrice);
@@ -301,6 +305,9 @@ public class DealActivity extends AppCompatActivity {
         menu.findItem(R.id.delete_menu).setVisible(isAdmin);
         menu.findItem(R.id.save_menu).setVisible(isAdmin);
         enableEditTexts(isAdmin);
+        if(isNewTravelDeal) {
+            menu.findItem(R.id.see_comments).setVisible(false);
+        }
     }
 
     @Override

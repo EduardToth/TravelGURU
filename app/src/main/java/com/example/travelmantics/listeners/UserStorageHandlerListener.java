@@ -20,7 +20,8 @@ public class UserStorageHandlerListener implements ValueEventListener {
 
         if (!userIsPresentInDatabase) {
             Optional<String> email = getEmail();
-            email.map(this::getUserName).ifPresent(this::saveUserInDatabase);
+            email.map(this::getUserName)
+                    .ifPresent(this::saveUserInDatabase);
 
         }
     }

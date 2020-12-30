@@ -6,23 +6,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -92,56 +83,5 @@ public class UtilityClass {
     public static List<DataSnapshot> convertToList(Iterable<DataSnapshot> children) {
         return StreamSupport.stream(children.spliterator(), false)
                 .collect(Collectors.toList());
-    }
-
-    public static boolean userAlreadyAddedReview(TravelDeal travelDeal) {
-        AtomicBoolean userAlreadyAddedComment = new AtomicBoolean(false);
-        AtomicBoolean atomicFlagChanged = new AtomicBoolean(false);
-
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child("comments")
-                .child(travelDeal.getId())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean userAddedComment = convertToList(snapshot.getChildren())
-                                .stream()
-                                .map(DataSnapshot::getKey)
-                                .filter(Objects::nonNull)
-                                .map(Object::toString)
-                                .anyMatch(AuthUtil.getCurrentUserUid()::equals);
-
-                        userAlreadyAddedComment.set(userAddedComment);
-                        atomicFlagChanged.set(true);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-        FirebaseDatabase.getInstance()
-                .getReference()
-                .child("comments")
-                .child(travelDeal.getId())
-                .child(AuthUtil.getCurrentUserUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Log.d("snp", snapshot.toString());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-        while (!atomicFlagChanged.get()) {
-        }
-
-        return userAlreadyAddedComment.get();
     }
 }

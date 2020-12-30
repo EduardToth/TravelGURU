@@ -1,5 +1,6 @@
 package com.example.travelmantics.utilities;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -48,29 +49,46 @@ public abstract class DealViewHolder extends RecyclerView.ViewHolder
     }
 
     protected void fillRatingBar(TravelDeal deal) {
+
         AtomicBoolean thereAreRatings = new AtomicBoolean(false);
         FirebaseDatabase.getInstance()
                 .getReference()
-                .child("ratings")
-                .child(deal.getId())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         synchronized (this) {
-                            ratingBar.setVisibility(View.VISIBLE);
-                            thereAreRatings.set(true);
-                            UtilityClass.convertToList(snapshot.getChildren())
-                                    .parallelStream()
-                                    .map(DataSnapshot::getValue)
-                                    .map(Objects::toString)
-                                    .filter(this::isNumber)
-                                    .map(Double::parseDouble)
-                                    .mapToDouble(d -> d)
-                                    .parallel()
-                                    .average()
-                                    .ifPresent(average -> ratingBar.setRating((float) average));
+                            if (snapshot.getKey().equals("ratings")) {
+                                Log.d("intra", "intra");
+                                UtilityClass.convertToList(snapshot.getChildren())
+                                        .parallelStream()
+                                        .filter(dataSnapshot -> dataSnapshot.getKey().equals(deal.getId()))
+                                        .peek(el -> Log.d("el", el.toString()))
+                                        .findAny()
+                                        .ifPresent(this::fillRating);
 
+                            }
                         }
+                    }
+
+                    private void fillRating(DataSnapshot dataSnapshot) {
+                        ratingBar.setVisibility(View.VISIBLE);
+                        UtilityClass.convertToList(dataSnapshot.getChildren())
+                                .parallelStream()
+                                .map(DataSnapshot::getChildren)
+                                .map(UtilityClass::convertToList)
+                                .flatMap(List::stream)
+                                .map(DataSnapshot::getValue)
+                                .filter(Objects::nonNull)
+                                .map(Object::toString)
+                                .filter(this::isNumber)
+                                .map(Double::parseDouble)
+                                .mapToDouble(d -> d)
+                                .average()
+                                .ifPresent(average -> ratingBar.setRating((float) average));
+                    }
+
+                    private List<DataSnapshot> getChildren(DataSnapshot dataSnapshot) {
+                        return UtilityClass.convertToList(dataSnapshot.getChildren());
                     }
 
                     private boolean isNumber(String str) {
