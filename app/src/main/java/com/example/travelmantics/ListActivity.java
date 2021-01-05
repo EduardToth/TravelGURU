@@ -34,6 +34,12 @@ public class ListActivity extends AppCompatActivity {
         try {
             PersistenceSetter.setupPersistence();
         }catch (DatabaseException e){}
+
+    }
+
+    private void goToStartActivity() {
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -58,9 +64,8 @@ public class ListActivity extends AppCompatActivity {
             startActivity(intent);
         } else if (item.getItemId() == R.id.logout_menu) {
             AuthUI.getInstance()
-                    .signOut(this);
-            Intent intent1 = new Intent(this, StartActivity.class);
-            startActivity(intent1);
+                    .signOut(this)
+                    .addOnSuccessListener(aVoid -> goToStartActivity());
         } else if (item.getItemId() == R.id.go_to_profile) {
             Intent intent2 = new Intent(this, ProfileActivity.class);
             startActivity(intent2);
@@ -93,8 +98,7 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Intent intent = new Intent(this, StartActivity.class);
-            startActivity(intent);
+            goToStartActivity();
         }
         super.onRestart();
     }
