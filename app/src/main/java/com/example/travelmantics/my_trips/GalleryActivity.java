@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.travelmantics.ProfileActivity;
 import com.example.travelmantics.R;
 import com.example.travelmantics.listeners.GalleryItemClickListener;
 import com.example.travelmantics.utilities.AuthUtil;
@@ -115,4 +116,9 @@ public class GalleryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
 }

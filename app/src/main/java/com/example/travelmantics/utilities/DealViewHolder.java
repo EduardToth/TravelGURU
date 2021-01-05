@@ -58,11 +58,9 @@ public abstract class DealViewHolder extends RecyclerView.ViewHolder
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                         synchronized (this) {
                             if (snapshot.getKey().equals("ratings")) {
-                                Log.d("intra", "intra");
                                 UtilityClass.convertToList(snapshot.getChildren())
                                         .parallelStream()
                                         .filter(dataSnapshot -> dataSnapshot.getKey().equals(deal.getId()))
-                                        .peek(el -> Log.d("el", el.toString()))
                                         .findAny()
                                         .ifPresent(this::fillRating);
 

@@ -49,13 +49,9 @@ public class ProfileUpdateActivity extends AppCompatActivity {
 
         profilePicture = findViewById(R.id.profile_picture2);
         loadPicture();
-
         editText = findViewById(R.id.name_getter);
-
         loadUserName();
-
         Button button = findViewById(R.id.picture_changer_button);
-
         button.setOnClickListener(view
                 -> UtilityClass.startIntentForPicture(this, PICTURE_RESULT));
 
@@ -259,7 +255,6 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     }
 
     private void storeUriInDatabase(Uri imageUri,  AtomicBoolean pictureSaveFinished ) {
-
         FirebaseDatabase.getInstance()
                 .getReference()
                 .child("client_info")
@@ -269,5 +264,4 @@ public class ProfileUpdateActivity extends AppCompatActivity {
                 .addOnSuccessListener(runnable -> pictureSaveFinished.set(true))
                 .addOnFailureListener(runnable -> pictureSaveFinished.set(true));
     }
-
 }

@@ -176,9 +176,7 @@ public class CommentAdderActivity extends AppCompatActivity {
     }
 
     private void finishSuccessfully(Void aVoid) {
-
         Toast.makeText(this, "Comment saved", Toast.LENGTH_LONG).show();
         finish();
-
     }
 }

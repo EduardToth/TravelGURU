@@ -468,5 +468,7 @@ public class DealActivity extends AppCompatActivity {
         intent.putExtra("deal", deal);
         startActivity(intent);
     }
+
+   
 }
 
