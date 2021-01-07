@@ -307,6 +307,7 @@ public class DealActivity extends AppCompatActivity {
         enableEditTexts(isAdmin);
         if(isNewTravelDeal) {
             menu.findItem(R.id.see_comments).setVisible(false);
+            menu.findItem(R.id.delete_menu).setVisible(false);
         }
     }
 
@@ -425,7 +426,6 @@ public class DealActivity extends AppCompatActivity {
 
     private void deleteDeal(TravelDeal deal) {
         mDatabaseReference.child(deal.getId()).removeValue();
-        Log.d("image name", deal.getImageName());
 
         if (deal.getImageName() != null && !deal.getImageName().isEmpty()) {
             StorageReference picRef = FirebaseStorage.getInstance()
